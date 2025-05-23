@@ -2,39 +2,19 @@
 <html>
 <head>
     <title>Sistema de Tarefas</title>
-    <style>
-        body { font-family: Arial; text-align: center; background-color: #f0f0f0; }
-        h1 { color: navy; }
-        .tarefa { margin: 10px; padding: 10px; background-color: white; }
-        .concluida { text-decoration: line-through; color: gray; }
-        form { margin: 20px; }
-        input, select, button { padding: 8px; margin: 5px; }
-        a { color: green; text-decoration: none; }
-        h3 { color: #333; }
-    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
     <h1>Sistema de Tarefas</h1>
-    <form method="post" action="/adicionar">
-        <input type="text" name="descricao" placeholder="Nova tarefa" required>
-        <select name="categoria_id" required>
-            {% for categoria in categorias %}
-                <option value="{{ categoria.id }}">{{ categoria.nome }}</option>
-            {% endfor %}
-        </select>
-        <button type="submit">Adicionar</button>
-    </form>
-    <h2>Tarefas por Categoria</h2>
-    {% for categoria in categorias %}
-        <h3>{{ categoria.nome }}</h3>
-        {% for tarefa in tarefas if tarefa.categoria == categoria.nome %}
-            <div class="tarefa {% if tarefa.concluida %}concluida{% endif %}">
-                {{ tarefa.descricao }}
-                {% if not tarefa.concluida %}
-                    <a href="/concluir/{{ tarefa.id }}">Concluir</a>
-                {% endif %}
-            </div>
+    <a href="{{ url_for('adicionar') }}">Adicionar Tarefa</a>
+    <ul>
+        {% for tarefa in tarefas %}
+            <li>{{ tarefa['descricao'] }} 
+                {% if tarefa['concluida'] %}(Concluída){% else %}
+                <a href="{{ url_for('concluir', id=tarefa['id']) }}">Concluir</a> | 
+                <a href="{{ url_for('deletar', id=tarefa['id']) }}">Deletar</a>{% endif %}
+            </li>
         {% endfor %}
-    {% endfor %}
+    </ul>
 </body>
 </html>

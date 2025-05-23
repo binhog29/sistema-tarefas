@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Adicionar Tarefa</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Adicionar Tarefa</h1>
+    <form method="POST">
+        <input type="text" name="tarefa" placeholder="Digite a tarefa" required>
+        <input type="submit" value="Adicionar">
+    </form>
+    <a href="{{ url_for('index') }}">Voltar</a>
+</body>
+</html>

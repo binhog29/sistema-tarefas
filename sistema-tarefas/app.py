@@ -1,60 +1,53 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, url_for
 import sqlite3
 
-app = Flask(__name__)
+app = Flask(__name__)  # Corrigido aqui!
 
-def init_db():
+def get_db_connection():
     conn = sqlite3.connect('tarefas.db')
-    # Cria tabela categorias
-    conn.execute('''CREATE TABLE IF NOT EXISTS categorias 
-                   (id INTEGER PRIMARY KEY AUTOINCREMENT, 
-                    nome TEXT)''')
-    # Cria tabela tarefas
-    conn.execute('''CREATE TABLE IF NOT EXISTS tarefas 
-                   (id INTEGER PRIMARY KEY AUTOINCREMENT, 
-                    descricao TEXT, 
-                    concluida INTEGER, 
-                    categoria_id INTEGER, 
-                    FOREIGN KEY (categoria_id) REFERENCES categorias(id))''')
-    # Adiciona categorias padrão
-    conn.execute('INSERT OR IGNORE INTO categorias (id, nome) VALUES (1, "Estudos")')
-    conn.execute('INSERT OR IGNORE INTO categorias (id, nome) VALUES (2, "Trabalho")')
-    conn.execute('INSERT OR IGNORE INTO categorias (id, nome) VALUES (3, "Pessoal")')
-    conn.commit()
-    conn.close()
-
-init_db()
+    conn.row_factory = sqlite3.Row
+    return conn
 
 @app.route('/')
-def home():
-    conn = sqlite3.connect('tarefas.db')
-    cursor = conn.execute('SELECT id, nome FROM categorias')
-    categorias = [{'id': row[0], 'nome': row[1]} for row in cursor]
-    cursor = conn.execute('''SELECT t.id, t.descricao, t.concluida, c.nome 
-                           FROM tarefas t 
-                           LEFT JOIN categorias c ON t.categoria_id = c.id''')
-    tarefas = [{'id': row[0], 'descricao': row[1], 'concluida': row[2], 'categoria': row[3]} for row in cursor]
+def index():
+    conn = get_db_connection()
+    tarefas = conn.execute('SELECT * FROM tarefas').fetchall()
     conn.close()
-    return render_template('index.html', tarefas=tarefas, categorias=categorias)
+    return render_template('index.html', tarefas=tarefas)
 
-@app.route('/adicionar', methods=['POST'])
+@app.route('/adicionar', methods=['GET', 'POST'])
 def adicionar():
-    descricao = request.form['descricao']
-    categoria_id = int(request.form['categoria_id'])
-    conn = sqlite3.connect('tarefas.db')
-    conn.execute('INSERT INTO tarefas (descricao, concluida, categoria_id) VALUES (?, 0, ?)', 
-                (descricao, categoria_id))
-    conn.commit()
-    conn.close()
-    return redirect('/')
+    if request.method == 'POST':
+        tarefa = request.form['tarefa']
+        conn = get_db_connection()
+        conn.execute("INSERT INTO tarefas (descricao, concluida) VALUES (?, 0)", (tarefa,))
+        conn.commit()
+        conn.close()
+        return redirect(url_for('index'))
+    return render_template('adicionar.html')
 
 @app.route('/concluir/<int:id>')
 def concluir(id):
-    conn = sqlite3.connect('tarefas.db')
-    conn.execute('UPDATE tarefas SET concluida = 1 WHERE id = ?', (id,))
+    conn = get_db_connection()
+    conn.execute("UPDATE tarefas SET concluida = 1 WHERE id = ?", (id,))
     conn.commit()
     conn.close()
-    return redirect('/')
+    return redirect(url_for('index'))
+
+@app.route('/deletar/<int:id>')
+def deletar(id):
+    conn = get_db_connection()
+    conn.execute("DELETE FROM tarefas WHERE id = ?", (id,))
+    conn.commit()
+    conn.close()
+    return redirect(url_for('index'))
 
 if __name__ == '__main__':
+    conn = get_db_connection()
+    conn.execute('''CREATE TABLE IF NOT EXISTS tarefas (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        descricao TEXT NOT NULL,
+        concluida BOOLEAN DEFAULT 0
+    )''')
+    conn.close()
     app.run(debug=True)
