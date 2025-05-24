@@ -1,37 +1,67 @@
 body {
     font-family: Arial, sans-serif;
-    margin: 20px;
+    margin: 0;
+    padding: 0;
     background-color: #f4f4f4;
 }
-h1 {
-    color: #333;
+header {
+    background-color: #333;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
 }
-a {
-    margin-right: 10px;
+nav a {
+    color: white;
+    margin: 0 10px;
     text-decoration: none;
-    color: #007BFF;
 }
-a:hover {
+nav a:hover {
     text-decoration: underline;
 }
-input[type="text"] {
-    padding: 5px;
-    margin-right: 10px;
+main {
+    padding: 20px;
 }
-input[type="submit"] {
-    padding: 5px 10px;
+h2 {
+    color: #333;
+}
+form {
+    margin-bottom: 20px;
+}
+input[type="text"], button {
+    padding: 8px;
+    margin: 5px 0;
+}
+button {
     background-color: #007BFF;
     color: white;
     border: none;
     cursor: pointer;
 }
+button:hover {
+    background-color: #0056b3;
+}
 ul {
     list-style-type: none;
     padding: 0;
 }
-li {
-    margin: 10px 0;
+.tarefa {
     background-color: white;
     padding: 10px;
-    border-radius: 5px;
+    margin: 5px 0;
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.tarefa.concluida {
+    background-color: #d4edda;
+    text-decoration: line-through;
+}
+.actions a {
+    margin-left: 10px;
+    color: #007BFF;
+    text-decoration: none;
+}
+.actions a:hover {
+    text-decoration: underline;
 }

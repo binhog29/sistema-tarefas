@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for
 import sqlite3
 
-app = Flask(__name__)  # Corrigido aqui!
+app = Flask(__name__)
 
 def get_db_connection():
     conn = sqlite3.connect('tarefas.db')
@@ -26,18 +26,24 @@ def adicionar():
         return redirect(url_for('index'))
     return render_template('adicionar.html')
 
-@app.route('/concluir/<int:id>')
-def concluir(id):
+@app.route('/editar/<int:id>', methods=['GET', 'POST'])
+def editar(id):
     conn = get_db_connection()
-    conn.execute("UPDATE tarefas SET concluida = 1 WHERE id = ?", (id,))
-    conn.commit()
+    tarefa = conn.execute('SELECT * FROM tarefas WHERE id = ?', (id,)).fetchone()
+    if request.method == 'POST':
+        nova_descricao = request.form['tarefa']
+        concluida = 1 if 'concluida' in request.form else 0
+        conn.execute('UPDATE tarefas SET descricao = ?, concluida = ? WHERE id = ?', (nova_descricao, concluida, id))
+        conn.commit()
+        conn.close()
+        return redirect(url_for('index'))
     conn.close()
-    return redirect(url_for('index'))
+    return render_template('editar.html', tarefa=tarefa)
 
 @app.route('/deletar/<int:id>')
 def deletar(id):
     conn = get_db_connection()
-    conn.execute("DELETE FROM tarefas WHERE id = ?", (id,))
+    conn.execute('DELETE FROM tarefas WHERE id = ?', (id,))
     conn.commit()
     conn.close()
     return redirect(url_for('index'))

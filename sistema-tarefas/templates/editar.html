@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h2>Editar Tarefa</h2>
+    <form method="POST">
+        <input type="text" name="tarefa" value="{{ tarefa['descricao'] }}" required>
+        <label>
+            <input type="checkbox" name="concluida" {% if tarefa['concluida'] %}checked{% endif %}> Concluída
+        </label>
+        <button type="submit">Salvar</button>
+    </form>
+{% endblock %}

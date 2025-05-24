@@ -1,20 +1,15 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Sistema de Tarefas</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<body>
-    <h1>Sistema de Tarefas</h1>
-    <a href="{{ url_for('adicionar') }}">Adicionar Tarefa</a>
-    <ul>
+{% extends 'base.html' %}
+{% block content %}
+    <h2>Tarefas</h2>
+    <ul id="lista-tarefas">
         {% for tarefa in tarefas %}
-            <li>{{ tarefa['descricao'] }} 
-                {% if tarefa['concluida'] %}(Concluída){% else %}
-                <a href="{{ url_for('concluir', id=tarefa['id']) }}">Concluir</a> | 
-                <a href="{{ url_for('deletar', id=tarefa['id']) }}">Deletar</a>{% endif %}
+            <li class="tarefa {% if tarefa['concluida'] %}concluida{% endif %}">
+                {{ tarefa['descricao'] }}
+                <div class="actions">
+                    <a href="{{ url_for('editar', id=tarefa['id']) }}">Editar</a>
+                    <a href="{{ url_for('deletar', id=tarefa['id']) }}" onclick="return confirm('Tem certeza que quer deletar?')">Deletar</a>
+                </div>
             </li>
         {% endfor %}
     </ul>
-</body>
-</html>
+{% endblock %}
