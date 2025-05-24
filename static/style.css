@@ -10,7 +10,10 @@ header {
     padding: 10px 20px;
     text-align: center;
 }
-nav a {
+nav {
+    margin-top: 10px;
+}
+nav a, nav span {
     color: white;
     margin: 0 10px;
     text-decoration: none;
@@ -27,7 +30,7 @@ h2 {
 form {
     margin-bottom: 20px;
 }
-input[type="text"], button {
+input[type="text"], input[type="password"], button {
     padding: 8px;
     margin: 5px 0;
 }
@@ -63,5 +66,30 @@ ul {
     text-decoration: none;
 }
 .actions a:hover {
-    text-decoration: underline;
+    text-decoration: underline;
+}
+.filtros {
+    margin-bottom: 20px;
+}
+.filtros a {
+    margin-right: 10px;
+    color: #007BFF;
+    text-decoration: none;
+}
+.filtros a.ativo {
+    font-weight: bold;
+    color: #333;
+}
+.flash {
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+}
+.flash.success {
+    background-color: #d4edda;
+    color: #155724;
+}
+.flash.error {
+    background-color: #f8d7da;
+    color: #721c24;
 }

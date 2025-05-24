@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h2>Tarefas</h2>
+    <div class="filtros">
+        <a href="{{ url_for('index', filtro='todas') }}" {% if filtro == 'todas' %}class="ativo"{% endif %}>Todas</a>
+        <a href="{{ url_for('index', filtro='concluidas') }}" {% if filtro == 'concluidas' %}class="ativo"{% endif %}>Concluídas</a>
+        <a href="{{ url_for('index', filtro='pendentes') }}" {% if filtro == 'pendentes' %}class="ativo"{% endif %}>Pendentes</a>
+    </div>
+    <form id="form-adicionar-ajax">
+        <input type="text" id="nova-tarefa" placeholder="Digite uma nova tarefa">
+        <button type="submit">Adicionar</button>
+    </form>
+    <ul id="lista-tarefas">
+        {% for tarefa in tarefas %}
+            <li class="tarefa {% if tarefa['concluida'] %}concluida{% endif %}" data-id="{{ tarefa['id'] }}">
+                {{ tarefa['descricao'] }}
+                <div class="actions">
+                    <a href="{{ url_for('editar', id=tarefa['id']) }}">Editar</a>
+                    <a href="{{ url_for('deletar', id=tarefa['id']) }}" onclick="return confirm('Tem certeza que quer deletar?')">Deletar</a>
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}
